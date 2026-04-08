@@ -1,0 +1,199 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #2a1b3d;
+    color: #ffffff;
+}
+
+.crud {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #3a2752;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #000;
+}
+
+.crud .head {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.crud .head h2 {
+    font-size: 48px;
+    color: #7dfc5b;
+    text-shadow: 2px 2px #000;
+    margin: 0;
+}
+
+.crud .head p {
+    font-size: 18px;
+    color: #d0f0ff;
+    margin: 5px 0 0 0;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.inputs input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+}
+
+.inputs .price {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.inputs .price input {
+    flex: 1;
+}
+
+.inputs #total {
+    background-color: #f31d1d;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+.inputs #total::before {
+   content: "Total: ";
+}
+
+.inputs button {
+    background-color: #4caf4c;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.inputs button:hover {
+    background-color: #6ef86e;
+    transform: scale(1.05);
+}
+
+.outputs {
+    margin-top: 20px;
+    background-color: #382758;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.outputs table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.outputs th, .outputs td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #4b3970;
+}
+
+.outputs th {
+    background-color: #4b3970;
+    color: #7dfc5b;
+}
+
+.outputs td button {
+    background-color: #5bb44b;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.outputs td button:hover {
+    background-color: #7dfc5b;
+    transform: scale(1.05);
+}
+.inputs :focus{
+    transform: scale(1.05,1);
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search input {
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background-color: #2a1b3d;
+    color: #fff;
+}
+
+.search input::placeholder {
+    color: #aaa;
+}
+
+.btnsearch {
+    display: flex;
+    gap: 10px;
+}
+
+.btnsearch button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    background-color: #8a68cc;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btnsearch button:hover {
+    background-color: #7dfc5b;
+    color: #000;
+    transform: scale(1.05);
+}
+.search input:focus {
+    box-shadow: 0 0 10px #7dfc5b;
+}
+.btnsearch button:active {
+    transform: scale(0.95);
+}
+
+#deleteall button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background-color: #ff5722;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 15px; 
+}
+
+
+#deleteall button:hover {
+    background-color: #ff784e;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255,120,78,0.5);
+}
