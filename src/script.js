@@ -55,7 +55,7 @@ if(localStorage.product!=null){
     category:category.value.toLowerCase()
 
   }
-  if(title.value!='' && price.value!=''&& category.value!='' && newpro.count <100 && newpro.count>0){
+if(title.value!='' && price.value!='' && category.value!='' && (mode=='Update' || (newpro.count <100 && newpro.count>0))){
       if(mode=='Create'){
   if(count.value>1){
       for(let i=0;i<count.value;i++){ datapro.push(newpro);}
