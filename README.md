@@ -64,7 +64,7 @@ project/
 ### 1. Clone repository
 
 ```bash
-git clone <your-repository-url>
+git clone <https://github.com/SaraEmad211/product-management-system.git>
 cd product-management-system
 ```
 
