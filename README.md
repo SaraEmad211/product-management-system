@@ -1,96 +1,132 @@
 # 🛒 Product Management System (CRUDS)
 
-A full-stack **Product Management Web App** built with vanilla JavaScript, HTML, CSS on the frontend — and Node.js + Express on the backend — featuring secure authentication, complete CRUD operations, real-time search, and persistent data storage.
+A full-stack **Product Management Web Application** built with **HTML, CSS, and Vanilla JavaScript** on the frontend, and **Node.js + Express.js** on the backend.
+
+The application includes secure user authentication, complete CRUD operations, real-time search, and persistent storage for products and users.
 
 ---
 
 ## ✨ Features
 
-- 🔐 **Authentication** — Secure Register & Login with bcrypt password hashing
-- ➕ **Create** — Add products with title, price, taxes, ads, discount, count, and category
-- 📖 **Read** — Display all products in a dynamic table
-- ✏️ **Update** — Edit existing product data inline
-- 🗑️ **Delete** — Remove a single product or delete all at once
-- 🔢 **Auto Total Calculation** — Real-time price calculation as you type
-- 🔍 **Search** — Filter products by title or category instantly
-- 💾 **Data Persistence** — Products saved in `localStorage`, users saved in `users.json`
-- 📦 **Bulk Insert** — Add multiple copies of a product using the count field
+* 🔐 **Secure Authentication** — Register & Login with bcrypt password hashing and JWT authentication
+* ➕ **Create** — Add products with title, price, taxes, ads, discount, count, and category
+* 📖 **Read** — Display all products in a dynamic table
+* ✏️ **Update** — Edit product data
+* 🗑️ **Delete** — Delete individual products or all products at once
+* 🔢 **Auto Total Calculation** — Real-time total price calculation
+* 🔍 **Search** — Search products by title or category
+* 💾 **Data Persistence** — Products stored in localStorage, users stored in JSON
+* 📦 **Bulk Insert** — Create multiple product entries using count
+* 🛡️ **Authentication Protection** — Protected routes with token verification
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | HTML5, CSS3, Vanilla JavaScript (ES6+) |
-| Backend | Node.js, Express.js |
-| Auth Security | bcrypt (password hashing) |
-| Data Storage | localStorage (products), JSON file (users) |
-| API | REST API (Fetch API on client side) |
+| Layer             | Technology                                 |
+| ----------------- | ------------------------------------------ |
+| Frontend          | HTML5, CSS3, Vanilla JavaScript (ES6+)     |
+| Backend           | Node.js, Express.js                        |
+| Authentication    | bcrypt, JWT                                |
+| Data Storage      | localStorage (products), JSON file (users) |
+| API Communication | Fetch API                                  |
 
 ---
 
 ## 📁 Project Structure
 
-```
+```bash
 project/
 │
 ├── public/
-│   ├── index.html        # Main CRUD dashboard
-│   └── auth.html         # Login / Register page
+│   ├── css/
+│   │   ├── auth.css
+│   │   └── style.css
+│   │
+│   ├── js/
+│   │   ├── auth.js
+│   │   └── script.js
+│   │
+│   └── pages/
+│       ├── auth.html
+│       └── index.html
 │
-├── src/
-│   ├── script.js         # CRUD logic, search, localStorage
-│   └── auth.js           # Fetch API calls for login/register
-│
-├── styles/
-│   ├── style.css         # Dashboard styles
-│   └── auth.css          # Auth page styles
-│
-├── users.json            # Auto-generated — stores registered users
-├── server.js             # Express server (auth endpoints)
-└── package.json
+├── server.js
+├── package.json
+├── package-lock.json
+└── users.json
 ```
 
 ---
 
 ## ⚙️ Setup & Run
 
-### 1. Install dependencies
+### 1. Clone repository
 
 ```bash
-npm install express bcrypt
+git clone <your-repository-url>
+cd product-management-system
 ```
 
-### 2. Run the server
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Start server
+
+```bash
+npm start
+```
+
+Or:
 
 ```bash
 node server.js
 ```
 
-### 3. Open the app
+### 4. Open application
 
-```
-http://localhost:3000/auth.html
+```bash
+http://localhost:3000
 ```
 
-> `users.json` is created automatically on first register — no setup needed.
+> `users.json` is generated automatically after first registration.
 
 ---
 
-## 🔐 How Authentication Works
+## 🔐 Authentication Flow
 
-1. User registers → password is **hashed with bcrypt** and saved to `users.json`
-2. User logs in → password is **compared** against the hash
-3. On success → `isLoggedIn` flag is set in `localStorage`
-4. `index.html` checks this flag on load — redirects to login if not authenticated
+1. User registers → Password is hashed using bcrypt and stored in `users.json`
+2. User logs in → Credentials are verified by the server
+3. On successful login → Server generates a JWT token
+4. Token is stored in browser localStorage
+5. Protected pages validate token using `/verify`
+6. Invalid or missing tokens redirect users to login page
+
+---
+
+## 🔒 Security Improvements
+
+### Fixed Authentication Bypass Vulnerability
+
+Previously, authentication relied only on client-side localStorage (`isLoggedIn`), which allowed authentication bypass.
+
+#### Fix Applied:
+
+* Removed insecure `isLoggedIn` authentication logic
+* Implemented JWT-based authentication
+* Added server-side token verification
+* Protected authenticated access using `/verify`
 
 ---
 
 ## 🔮 Future Improvements
 
-- [ ] Add JWT tokens for stateless, secure sessions
-- [ ] Replace JSON file with a real database (MongoDB / PostgreSQL)
-- [ ] Add logout button
-- [ ] Make UI fully responsive for mobile
-- [ ] Add server-side input validation with detailed error messages
+* [ ] Move product management to backend APIs
+* [ ] Replace JSON storage with MongoDB or PostgreSQL
+* [ ] Store JWT in HTTP-only cookies
+* [ ] Add logout functionality
+* [ ] Improve responsive design
+* [ ] Add stronger server-side validation
