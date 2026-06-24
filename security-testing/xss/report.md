@@ -4,15 +4,14 @@
 
 A Stored Cross-Site Scripting (XSS) vulnerability was identified in the Product Management System.
 
-User-controlled input is stored in `localStorage` and rendered using `innerHTML` without sanitization, allowing execution of arbitrary JavaScript in any user's browser.
-
+User-controlled input is stored server-side and rendered using `innerHTML`
 ---
 
 ## Vulnerability Details
 
 | Field | Details |
 |---|---|
-| **Type** | Stored XSS (Persistent) + Reflected XSS (Search) |
+| **Type** | Stored XSS (Persistent, Multiple Execution Points)|
 | **Severity** | 🔴 High |
 | **CVSS 3.1 Score** | 7.4 — `AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:L` |
 | **Affected Components** | Product Title Input, Product Category Input, Product Table Rendering, Search Function |
@@ -50,7 +49,7 @@ This allows malicious payloads to be interpreted as executable HTML/JavaScript.
 ```
 
 3. Click **Create**
-4. The payload is stored in `localStorage`
+4. The payload is stored in the backend product storage (`products.json`)
 5. The payload executes automatically when the product list is rendered. If the "count" field is greater than 1, multiple entries are created, causing the payload to execute multiple times (once per entry).
 ---
 
@@ -118,7 +117,7 @@ This amplifies the attack by triggering multiple independent executions automati
 
 ### Persistence Across Sessions
 
-Because data is stored in `localStorage`:
+Because product data is stored persistently in backend storage:
 
 * Payload persists after page reload
 * Payload persists across browser sessions
@@ -137,6 +136,9 @@ An attacker can:
 * Inject phishing content within the application
 * Persist malicious payloads across sessions
 * Amplify the attack via multiple stored entries
+* JWT token theft
+* Session hijacking
+* Authenticated API abuse
 
 ---
 
@@ -146,7 +148,7 @@ An attacker can:
 |---|---|---|
 | Attack Vector | Network (AV:N) | Exploitable via web browser |
 | Attack Complexity | Low (AC:L) | No special conditions required |
-| Privileges Required | None (PR:N) | Authentication can be bypassed (client-side only) |
+| Privileges Required | Low (PR:L) | Attacker must be authenticated to create malicious products |
 | User Interaction | Required (UI:R) | Victim must open the page |
 | Scope | Unchanged (S:U) | No scope change |
 | Confidentiality | High (C:H) | Sensitive data exposure possible |
