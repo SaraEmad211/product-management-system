@@ -27,12 +27,12 @@ loginForm.addEventListener('submit', async (e) => {
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({email, password})
         });
-        const text = await res.text();
+const data = await res.json();
         if(res.status === 200){
-            localStorage.setItem('isLoggedIn', 'true');
-            window.location.href = '/index.html';
+localStorage.setItem('token', data.token);
+ window.location.href = '/products';
         } else {
-            document.getElementById('message').innerText = text;
+    document.getElementById('message').innerText = data.message || 'Login failed';
         }
     } catch(err) {
         console.log(err);

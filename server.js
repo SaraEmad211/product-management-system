@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import path from 'path';
 import fs from 'fs';
+import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -27,10 +28,23 @@ function saveUsers(users) {
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/styles', express.static(path.join(__dirname, 'styles')));
-app.use('/src', express.static(path.join(__dirname, 'src')));
+function verifyToken(req, res, next) {
+    const authHeader = req.headers.authorization;
 
+    if (!authHeader) {
+        return res.status(401).send('Unauthorized');
+    }
 
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decoded = jwt.verify(token, 'my-secret-key');
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).send('Invalid token');
+    }
+}
 app.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -76,13 +90,33 @@ app.post('/login', async (req, res) => {
             return res.status(400).send('Wrong Email or Password!');
         }
 
-        res.status(200).send('Logged in successfully!');
+        const token = jwt.sign(
+            { email: findUser.email , role: 'user'},
+            'my-secret-key',
+            { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+            message: 'Logged in successfully!',
+            token
+        });
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
 });
 
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'pages', 'auth.html'));
+});
+app.get('/products', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'pages', 'index.html'));
+});
+app.get('/verify', verifyToken, (req, res) => {
+    res.status(200).json({
+        message: 'Authorized',
+        user: req.user
+    });
+});
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
