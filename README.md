@@ -15,7 +15,7 @@ The application includes secure user authentication, complete CRUD operations, r
 * 🗑️ **Delete** — Delete individual products or all products at once
 * 🔢 **Auto Total Calculation** — Real-time total price calculation
 * 🔍 **Search** — Search products by title or category
-* 💾 **Data Persistence** — Products stored in localStorage, users stored in JSON
+* 💾 **Data Persistence — Products and users stored in JSON files
 * 📦 **Bulk Insert** — Create multiple product entries using count
 * 🛡️ **Authentication Protection** — Protected routes with token verification
 
@@ -28,7 +28,7 @@ The application includes secure user authentication, complete CRUD operations, r
 | Frontend          | HTML5, CSS3, Vanilla JavaScript (ES6+)     |
 | Backend           | Node.js, Express.js                        |
 | Authentication    | bcrypt, JWT                                |
-| Data Storage      | localStorage (products), JSON file (users) |
+| Data Storage      | JSON files (products.json, users.json)     |
 | API Communication | Fetch API                                  |
 
 ---
@@ -54,7 +54,9 @@ project/
 ├── server.js
 ├── package.json
 ├── package-lock.json
+├── products.json
 └── users.json
+
 ```
 
 ---
@@ -64,7 +66,7 @@ project/
 ### 1. Clone repository
 
 ```bash
-git clone <https://github.com/SaraEmad211/product-management-system.git>
+git clone https://github.com/SaraEmad211/product-management-system.git
 cd product-management-system
 ```
 
@@ -107,6 +109,20 @@ http://localhost:3000
 
 ---
 
+## API Endpoints
+
+### Authentication
+- POST /register
+- POST /login
+- GET /verify
+
+### Products
+- GET /api/products
+- POST /api/products
+- PUT /api/products/:id
+- DELETE /api/products/:id
+- DELETE /api/products
+  
 ## 🔒 Security Improvements
 
 ### Fixed Authentication Bypass Vulnerability
@@ -124,7 +140,6 @@ Previously, authentication relied only on client-side localStorage (`isLoggedIn`
 
 ## 🔮 Future Improvements
 
-* [ ] Move product management to backend APIs
 * [ ] Replace JSON storage with MongoDB or PostgreSQL
 * [ ] Store JWT in HTTP-only cookies
 * [ ] Add logout functionality
