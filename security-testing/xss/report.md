@@ -4,14 +4,15 @@
 
 A Stored Cross-Site Scripting (XSS) vulnerability was identified in the Product Management System.
 
-User-controlled input is stored server-side and rendered using `innerHTML`
+User-controlled input is stored in `localStorage` and rendered using `innerHTML` without sanitization, allowing execution of arbitrary JavaScript in any user's browser.
+
 ---
 
 ## Vulnerability Details
 
 | Field | Details |
 |---|---|
-| **Type** | Stored XSS (Persistent, Multiple Execution Points)|
+| **Type** | Stored XSS (Persistent) + Reflected XSS (Search) |
 | **Severity** | 🔴 High |
 | **CVSS 3.1 Score** | 7.4 — `AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:L` |
 | **Affected Components** | Product Title Input, Product Category Input, Product Table Rendering, Search Function |
@@ -49,7 +50,7 @@ This allows malicious payloads to be interpreted as executable HTML/JavaScript.
 ```
 
 3. Click **Create**
-4. The payload is stored in the backend product storage (`products.json`)
+4. The payload is stored in `localStorage`
 5. The payload executes automatically when the product list is rendered. If the "count" field is greater than 1, multiple entries are created, causing the payload to execute multiple times (once per entry).
 ---
 
@@ -117,7 +118,7 @@ This amplifies the attack by triggering multiple independent executions automati
 
 ### Persistence Across Sessions
 
-Because product data is stored persistently in backend storage:
+Because data is stored in `localStorage`:
 
 * Payload persists after page reload
 * Payload persists across browser sessions
@@ -148,7 +149,7 @@ An attacker can:
 |---|---|---|
 | Attack Vector | Network (AV:N) | Exploitable via web browser |
 | Attack Complexity | Low (AC:L) | No special conditions required |
-| Privileges Required | Low (PR:L) | Attacker must be authenticated to create malicious products |
+| Privileges Required | None (PR:L) | Authentication can be bypassed (client-side only) |
 | User Interaction | Required (UI:R) | Victim must open the page |
 | Scope | Unchanged (S:U) | No scope change |
 | Confidentiality | High (C:H) | Sensitive data exposure possible |
