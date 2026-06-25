@@ -19,7 +19,26 @@ let count =document.getElementById('count');
 let category =document.getElementById('category');
 let submit =document.getElementById('submit');
 let btndelete =document.getElementById('deleteall');
+const token = localStorage.getItem('token');
 
+if (!token) {
+    window.location.href = '/';
+}
+
+fetch('/verify', {
+    headers: {
+        Authorization: `Bearer ${token}`
+    }
+})
+.then(res => {
+    if (!res.ok) {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    }
+})
+.catch(() => {
+    window.location.href = '/';
+});
 let mode='Create';
 let tmp;
 function gettotal(){
@@ -35,13 +54,22 @@ function gettotal(){
     }
    
 }
-let datapro=[];
-if(localStorage.product!=null){
-  datapro= JSON.parse(localStorage.product);
-}
- 
 
- submit.onclick =function(){
+
+ let datapro = [];
+async function fetchProducts() {
+    const res = await fetch('/api/products', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    datapro = await res.json();
+    showdata();
+}
+
+fetchProducts();
+ submit.onclick =async function(){
 
   let newpro=
   {
@@ -56,16 +84,46 @@ if(localStorage.product!=null){
 
   }
 if(title.value!='' && price.value!='' && category.value!='' && (mode=='Update' || (newpro.count <100 && newpro.count>0))){
-      if(mode=='Create'){
-  if(count.value>1){
-      for(let i=0;i<count.value;i++){ datapro.push(newpro);}
+//       if(mode=='Create'){
+//   if(count.value>1){
+//       for(let i=0;i<count.value;i++){ datapro.push(newpro);}
 
-  }
- else {datapro.push(newpro);}
-  }
+//   }
+//  else {datapro.push(newpro);}
+//   }
+if(mode=='Create'){
+   if(count.value > 1){
+      for(let i=0; i<count.value; i++){
+         await fetch('/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(newpro)
+         });
+      }
+   } else {
+      await fetch('/api/products', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(newpro)
+      });
+   }
+}
   else{
-    datapro[tmp]=newpro;
-    mode="Create";
+  await fetch(`/api/products/${tmp}`, {
+      method: 'PUT',
+      headers: {
+         'Content-Type': 'application/json',
+         Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(newpro)
+   });
+       mode="Create";
     submit.innerHTML="Create";
     count.style.display='block';
    
@@ -74,10 +132,11 @@ if(title.value!='' && price.value!='' && category.value!='' && (mode=='Update' |
   }
 
 
-  localStorage.setItem('product',JSON.stringify(datapro));
+  // localStorage.setItem('product',JSON.stringify(datapro));
 
    gettotal();
-  showdata();
+  // showdata();
+  fetchProducts();
  }
 
  function clearform(){
@@ -120,23 +179,29 @@ else{
 
 }
 }
-showdata();
+// showdata();
 
 
-function delete_pro (i){
-  datapro.splice(i,1);
-  localStorage.product =JSON.stringify(datapro);
-  showdata();
+async function delete_pro(i){
+   await fetch(`/api/products/${i}`, {
+      method: 'DELETE',
+      headers: {
+         Authorization: `Bearer ${token}`
+      }
+   });
+
+   fetchProducts();
 }
 
-function delete_All(){
-  //localStorage.clear();
- // datapro.slice(0); wrong
-// datapro = []; true
-  localStorage.removeItem('product');
-datapro.splice(0);  //true
-  showdata();
+async function delete_All(){
+   await fetch('/api/products', {
+      method: 'DELETE',
+      headers: {
+         Authorization: `Bearer ${token}`
+      }
+   });
 
+   fetchProducts();
 }
 
 function update_pro(i){
@@ -174,7 +239,8 @@ else{
 
 search.focus();
 search.value='';
-showdata();
+// showdata();
+fetchProducts();
 }
 
 function SearchData(value){

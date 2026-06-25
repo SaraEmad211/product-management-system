@@ -18,6 +18,7 @@ document.getElementById('showLogin').addEventListener('click', () => {
 // Login
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -27,13 +28,16 @@ loginForm.addEventListener('submit', async (e) => {
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({email, password})
         });
-const data = await res.json();
+
+        const data = await res.json();
+
         if(res.status === 200){
-localStorage.setItem('token', data.token);
- window.location.href = '/products';
+            localStorage.setItem('token', data.token);
+            window.location.href = '/products';
         } else {
-    document.getElementById('message').innerText = data.message || 'Login failed';
+            document.getElementById('message').innerText = data.message || 'Login failed';
         }
+
     } catch(err) {
         console.log(err);
     }

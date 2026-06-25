@@ -10,7 +10,7 @@ const port = 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+const PRODUCTS_FILE = path.join(__dirname, 'products.json');
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 
@@ -25,6 +25,16 @@ function saveUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
+function loadProducts() {
+    if (!fs.existsSync(PRODUCTS_FILE)) {
+        fs.writeFileSync(PRODUCTS_FILE, JSON.stringify([]));
+    }
+    return JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf-8'));
+}
+
+function saveProducts(products) {
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
+}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -103,6 +113,45 @@ app.post('/login', async (req, res) => {
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
+});
+
+
+
+
+app.get('/api/products', verifyToken, (req, res) => {
+    const products = loadProducts();
+    res.json(products);
+});
+app.post('/api/products', verifyToken, (req, res) => {
+    const products = loadProducts();
+    const product = req.body;
+
+    products.push(product);
+    saveProducts(products);
+
+    res.status(201).json(product);
+});
+app.delete('/api/products/:id', verifyToken, (req, res) => {
+    let products = loadProducts();
+    const id = Number(req.params.id);
+
+    products.splice(id, 1);
+    saveProducts(products);
+
+    res.json({ message: 'Deleted' });
+});
+app.delete('/api/products', verifyToken, (req, res) => {
+    saveProducts([]);
+    res.json({ message: 'All products deleted' });
+});
+app.put('/api/products/:id', verifyToken, (req, res) => {
+    let products = loadProducts();
+    const id = Number(req.params.id);
+
+    products[id] = req.body;
+    saveProducts(products);
+
+    res.json(products[id]);
 });
 
 app.get('/', (req, res) => {
