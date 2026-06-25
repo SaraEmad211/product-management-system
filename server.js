@@ -4,6 +4,8 @@ import path from 'path';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -48,7 +50,7 @@ function verifyToken(req, res, next) {
     const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, 'my-secret-key');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (err) {
@@ -58,20 +60,47 @@ function verifyToken(req, res, next) {
 app.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body;
-
+const cleanEmail = email?.trim();
+const cleanPassword = password?.trim();
         if (!email || !password) {
             return res.status(400).send('Email and password are required!');
         }
+       
+                const users = loadUsers();
 
-        const users = loadUsers();
-
-        const findUser = users.find((data) => email === data.email);
+const findUser = users.find(
+    user => user.email.toLowerCase() === cleanEmail.toLowerCase()
+);
         if (findUser) {
             return res.status(400).send('Email already exists!');
         }
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        const hashedPass = await bcrypt.hash(password, 10);
-        users.push({ email, password: hashedPass });
+        if (!passwordRegex.test(cleanPassword)) {
+            return res.status(400).send(
+                'Weak password. Use at least 8 chars with uppercase, lowercase, number, and special char.'
+            );
+        }
+const emailParts = cleanEmail
+    .toLowerCase()
+    .split(/[@._-]/)
+    .filter(part => part.length >= 3);
+const lowerPassword = cleanPassword.toLowerCase();
+
+const containsEmailPart = emailParts.some(part =>
+    lowerPassword.includes(part)
+);
+
+if (containsEmailPart) {
+    return res.status(400).send(
+        'Password should not contain parts of your email.'
+    );
+}
+       
+
+        const hashedPass = await bcrypt.hash(cleanPassword, 10);
+        users.push({ email:cleanEmail, password: hashedPass });
         saveUsers(users);
 
         res.status(201).send('Registered successfully!');
@@ -83,26 +112,28 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
+const cleanEmail = email?.trim();
+const cleanPassword = password?.trim();
         if (!email || !password) {
             return res.status(400).send('Email and password are required!');
         }
 
         const users = loadUsers();
 
-        const findUser = users.find((data) => email === data.email);
-        if (!findUser) {
+const findUser = users.find(
+    user => user.email.toLowerCase() === cleanEmail.toLowerCase()
+);        if (!findUser) {
             return res.status(400).send('Wrong Email or Password!');
         }
 
-        const passMatch = await bcrypt.compare(password, findUser.password);
+        const passMatch = await bcrypt.compare(cleanPassword, findUser.password);
         if (!passMatch) {
             return res.status(400).send('Wrong Email or Password!');
         }
 
         const token = jwt.sign(
             { email: findUser.email , role: 'user'},
-            'my-secret-key',
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 

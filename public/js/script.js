@@ -149,18 +149,28 @@ title.value='';
   count.value='',
    category.value=''
  }
+ function escapeHTML(str) {
+  if (!str) return '';
+
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 function showdata(){
 let table='';
 for(let i=0;i<datapro.length;i++){
   table+=`
      <tr>
     <td>${i}</td>
-    <td>${datapro[i].title}</td>
-    <td>${datapro[i].price}</td>
-    <td>${datapro[i].taxes}</td>
-    <td>${datapro[i].ads}</td>
-    <td>${datapro[i].discount}</td>
-    <td>${datapro[i].category}</td>
+    <td>${escapeHTML(datapro[i].title)}</td>
+    <td>${escapeHTML(datapro[i].price)}</td>
+    <td>${escapeHTML(datapro[i].taxes)}</td>
+    <td>${escapeHTML(datapro[i].ads)}</td>
+    <td>${escapeHTML(datapro[i].discount)}</td>
+    <td>${escapeHTML(datapro[i].category)}</td>
     <td><button onclick="update_pro(${i})" class="update">update</button></td>
     <td><button onclick="delete_pro(${i})" class="delete">delete</button></td>
   </tr>
@@ -254,12 +264,12 @@ for(let i=0;i<datapro.length;i++)
   table+=`
      <tr>
     <td>${i}</td>
-    <td>${datapro[i].title}</td>
-    <td>${datapro[i].price}</td>
-    <td>${datapro[i].taxes}</td>
-    <td>${datapro[i].ads}</td>
-    <td>${datapro[i].discount}</td>
-    <td>${datapro[i].category}</td>
+    <td>${escapeHTML(datapro[i].title)}</td>
+    <td>${escapeHTML(datapro[i].price)}</td>
+    <td>${escapeHTML(datapro[i].taxes)}</td>
+    <td>${escapeHTML(datapro[i].ads)}</td>
+    <td>${escapeHTML(datapro[i].discount)}</td>
+    <td>${escapeHTML(datapro[i].category)}</td>
     <td><button onclick="update_pro(${i})" class="update">update</button></td>
     <td><button onclick="delete_pro(${i})" class="delete">delete</button></td>
   </tr>
@@ -279,12 +289,12 @@ else{
   table+=`
      <tr>
     <td>${i}</td>
-    <td>${datapro[i].title}</td>
-    <td>${datapro[i].price}</td>
-    <td>${datapro[i].taxes}</td>
-    <td>${datapro[i].ads}</td>
-    <td>${datapro[i].discount}</td>
-    <td>${datapro[i].category}</td>
+ <td>${escapeHTML(datapro[i].title)}</td>
+    <td>${escapeHTML(datapro[i].price)}</td>
+    <td>${escapeHTML(datapro[i].taxes)}</td>
+    <td>${escapeHTML(datapro[i].ads)}</td>
+    <td>${escapeHTML(datapro[i].discount)}</td>
+    <td>${escapeHTML(datapro[i].category)}</td>
     <td><button onclick="update_pro(${i})" class="update">update</button></td>
     <td><button onclick="delete_pro(${i})" class="delete">delete</button></td>
   </tr>
