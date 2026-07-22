@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { loadProducts, saveProducts } from '../utils/fileStorage.js';
 
 export function getProducts(req, res) {
@@ -7,7 +8,7 @@ export function getProducts(req, res) {
 
 export function createProduct(req, res) {
     const products = loadProducts();
-    const product = req.body;
+    const product = { id: randomUUID(), ...req.body };
 
     products.push(product);
     saveProducts(products);
@@ -16,10 +17,15 @@ export function createProduct(req, res) {
 }
 
 export function deleteProduct(req, res) {
-    let products = loadProducts();
-    const id = Number(req.params.id);
+    const products = loadProducts();
+    const id = req.params.id;
+    const index = products.findIndex((product) => product.id === id);
 
-    products.splice(id, 1);
+    if (index === -1) {
+        return res.status(404).json({ message: 'Product not found' });
+    }
+
+    products.splice(index, 1);
     saveProducts(products);
 
     res.json({ message: 'Deleted' });
@@ -31,11 +37,16 @@ export function deleteAllProducts(req, res) {
 }
 
 export function updateProduct(req, res) {
-    let products = loadProducts();
-    const id = Number(req.params.id);
+    const products = loadProducts();
+    const id = req.params.id;
+    const index = products.findIndex((product) => product.id === id);
 
-    products[id] = req.body;
+    if (index === -1) {
+        return res.status(404).json({ message: 'Product not found' });
+    }
+
+    products[index] = { ...req.body, id };
     saveProducts(products);
 
-    res.json(products[id]);
+    res.json(products[index]);
 }

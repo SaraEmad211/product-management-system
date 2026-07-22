@@ -193,7 +193,7 @@ else{
 
 
 async function delete_pro(i){
-   await fetch(`/api/products/${i}`, {
+   await fetch(`/api/products/${datapro[i].id}`, {
       method: 'DELETE',
       headers: {
          Authorization: `Bearer ${token}`
@@ -227,7 +227,7 @@ title.value=datapro[i].title;
 gettotal();
 submit.innerHTML='Update';
 mode='Update';
-tmp=i;
+tmp=datapro[i].id;
 scroll({
   top:0,
   behavior:"smooth"
