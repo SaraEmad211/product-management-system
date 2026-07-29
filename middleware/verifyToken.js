@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
+import { sendError } from '../utils/apiResponse.js';
 
 export function verifyToken(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-        return res.status(401).send('Unauthorized');
+        return sendError(res, 'Unauthorized', 401);
     }
 
     const token = authHeader.split(' ')[1];
@@ -14,6 +15,6 @@ export function verifyToken(req, res, next) {
         req.user = decoded;
         next();
     } catch (err) {
-        return res.status(401).send('Invalid token');
+        return sendError(res, 'Invalid token', 401);
     }
 }

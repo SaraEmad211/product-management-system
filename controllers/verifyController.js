@@ -1,6 +1,8 @@
+import { sendSuccess } from '../utils/apiResponse.js';
+
 export function verify(req, res) {
-    res.status(200).json({
+    sendSuccess(res, {
         message: 'Authorized',
-        user: req.user
+        user: req.user,
     });
 }

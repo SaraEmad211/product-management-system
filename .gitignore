@@ -1,4 +1,27 @@
 node_modules/
-users.json
+
 products.json
+
+# Dependencies
+node_modules/
+
+# Environment variables
 .env
+.env.*
+
+# Runtime data
+users.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+test.txt

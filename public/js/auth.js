@@ -31,8 +31,8 @@ loginForm.addEventListener('submit', async (e) => {
 
         const data = await res.json();
 
-        if(res.status === 200){
-            localStorage.setItem('token', data.token);
+        if (data.success) {
+            localStorage.setItem('token', data.data.token);
             window.location.href = '/products';
         } else {
             document.getElementById('message').innerText = data.message || 'Login failed';
@@ -55,13 +55,13 @@ registerForm.addEventListener('submit', async (e) => {
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({email, password})
         });
-        const text = await res.text();
-        if(res.status === 201){
+        const data = await res.json();
+        if (data.success) {
             document.getElementById('message').innerText = 'Registered successfully! You can login now.';
             registerForm.style.display = 'none';
             loginForm.style.display = 'block';
         } else {
-            document.getElementById('message').innerText = text;
+            document.getElementById('message').innerText = data.message;
         }
     } catch(err) {
         console.log(err);

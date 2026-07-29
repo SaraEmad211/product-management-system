@@ -23,22 +23,29 @@ const token = localStorage.getItem('token');
 
 if (!token) {
     window.location.href = '/';
+} else {
+    fetch('/verify', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then(res => {
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+            return;
+        }
+        fetchProducts();
+    })
+    .catch(() => {
+        window.location.href = '/';
+    });
 }
 
-fetch('/verify', {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-})
-.then(res => {
-    if (!res.ok) {
-        localStorage.removeItem('token');
-        window.location.href = '/';
-    }
-})
-.catch(() => {
+function logout() {
+    localStorage.removeItem('token');
     window.location.href = '/';
-});
+}
 let mode='Create';
 let tmp;
 function gettotal(){
@@ -64,11 +71,14 @@ async function fetchProducts() {
         }
     });
 
-    datapro = await res.json();
-    showdata();
+    const result = await res.json();
+
+    if (result.success) {
+        datapro = result.data;
+        showdata();
+    }
 }
 
-fetchProducts();
  submit.onclick =async function(){
 
   let newpro=

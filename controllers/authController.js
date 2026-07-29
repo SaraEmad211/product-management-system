@@ -1,14 +1,24 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { loadUsers, saveUsers } from '../utils/fileStorage.js';
+import { sendSuccess, sendError } from '../utils/apiResponse.js';
+
+function requireCredentials(email, password, res) {
+    if (!email || !password) {
+        sendError(res, 'Email and password are required!', 400);
+        return false;
+    }
+    return true;
+}
 
 export async function register(req, res) {
     try {
         const { email, password } = req.body;
         const cleanEmail = email?.trim();
         const cleanPassword = password?.trim();
-        if (!email || !password) {
-            return res.status(400).send('Email and password are required!');
+
+        if (!requireCredentials(email, password, res)) {
+            return;
         }
 
         const users = loadUsers();
@@ -17,16 +27,20 @@ export async function register(req, res) {
             user => user.email.toLowerCase() === cleanEmail.toLowerCase()
         );
         if (findUser) {
-            return res.status(400).send('Email already exists!');
+            return sendError(res, 'Email already exists!', 409);
         }
+
         const passwordRegex =
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
         if (!passwordRegex.test(cleanPassword)) {
-            return res.status(400).send(
-                'Weak password. Use at least 8 chars with uppercase, lowercase, number, and special char.'
+            return sendError(
+                res,
+                'Weak password. Use at least 8 chars with uppercase, lowercase, number, and special char.',
+                400
             );
         }
+
         const emailParts = cleanEmail
             .toLowerCase()
             .split(/[@._-]/)
@@ -38,8 +52,10 @@ export async function register(req, res) {
         );
 
         if (containsEmailPart) {
-            return res.status(400).send(
-                'Password should not contain parts of your email.'
+            return sendError(
+                res,
+                'Password should not contain parts of your email.',
+                400
             );
         }
 
@@ -47,9 +63,9 @@ export async function register(req, res) {
         users.push({ email: cleanEmail, password: hashedPass });
         saveUsers(users);
 
-        res.status(201).send('Registered successfully!');
+        sendSuccess(res, { message: 'Registered successfully!' }, 201);
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        sendError(res, err.message, 500);
     }
 }
 
@@ -58,8 +74,9 @@ export async function login(req, res) {
         const { email, password } = req.body;
         const cleanEmail = email?.trim();
         const cleanPassword = password?.trim();
-        if (!email || !password) {
-            return res.status(400).send('Email and password are required!');
+
+        if (!requireCredentials(email, password, res)) {
+            return;
         }
 
         const users = loadUsers();
@@ -68,12 +85,12 @@ export async function login(req, res) {
             user => user.email.toLowerCase() === cleanEmail.toLowerCase()
         );
         if (!findUser) {
-            return res.status(400).send('Wrong Email or Password!');
+            return sendError(res, 'Wrong Email or Password!', 401);
         }
 
         const passMatch = await bcrypt.compare(cleanPassword, findUser.password);
         if (!passMatch) {
-            return res.status(400).send('Wrong Email or Password!');
+            return sendError(res, 'Wrong Email or Password!', 401);
         }
 
         const token = jwt.sign(
@@ -82,11 +99,11 @@ export async function login(req, res) {
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({
+        sendSuccess(res, {
             message: 'Logged in successfully!',
-            token
+            token,
         });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        sendError(res, err.message, 500);
     }
 }

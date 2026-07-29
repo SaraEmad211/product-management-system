@@ -19,13 +19,30 @@ export function loadProducts() {
     }
     const products = JSON.parse(fs.readFileSync(paths.productsFile, 'utf-8'));
     let migrated = false;
+    const fallbackTimestamp = new Date().toISOString();
 
     const normalized = products.map((product) => {
-        if (product.id) {
-            return product;
+        const normalizedProduct = { ...product };
+        let changed = false;
+
+        if (!normalizedProduct.id) {
+            normalizedProduct.id = randomUUID();
+            changed = true;
         }
-        migrated = true;
-        return { id: randomUUID(), ...product };
+        if (!normalizedProduct.createdAt) {
+            normalizedProduct.createdAt = fallbackTimestamp;
+            changed = true;
+        }
+        if (!normalizedProduct.updatedAt) {
+            normalizedProduct.updatedAt = normalizedProduct.createdAt;
+            changed = true;
+        }
+
+        if (changed) {
+            migrated = true;
+        }
+
+        return normalizedProduct;
     });
 
     if (migrated) {
