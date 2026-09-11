@@ -51,11 +51,16 @@ project/
 │       ├── auth.html
 │       └── index.html
 │
+├── config/
+│   └── index.js
+│
 ├── server.js
 ├── package.json
 ├── package-lock.json
 ├── products.json
-└── users.json
+├── users.json
+├── .env.example
+└── .gitignore
 
 ```
 
@@ -75,8 +80,17 @@ cd product-management-system
 ```bash
 npm install
 ```
+### 3. Configure environment variables
 
-### 3. Start server
+Create a .env file in the project root:
+```bash
+JWT_SECRET=your-secret-key
+```
+The JWT_SECRET is used by the server to sign and verify JWT authentication tokens.
+
+For security, the .env file is not included in the repository.
+
+### 4. Start server
 
 ```bash
 npm start
