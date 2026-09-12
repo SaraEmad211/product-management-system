@@ -59,7 +59,6 @@ project/
 ├── package-lock.json
 ├── products.json
 ├── users.json
-├── .env.example
 └── .gitignore
 
 ```
@@ -102,7 +101,7 @@ Or:
 node server.js
 ```
 
-### 4. Open application
+### 5. Open application
 
 ```bash
 http://localhost:3000
